@@ -94,7 +94,7 @@ Resources:
       Threshold: !GetAtt Multiplication2.Value
       Dimensions:
       - Name: Currency
-        Value: CNY
+        Value: USD
       MetricName: EstimatedCharges
       Namespace: AWS/Billing
       Statistic: Maximum
@@ -118,7 +118,7 @@ Resources:
       Threshold: !GetAtt Multiplication3.Value
       Dimensions:
       - Name: Currency
-        Value: CNY
+        Value: USD
       MetricName: EstimatedCharges
       Namespace: AWS/Billing
       Statistic: Maximum
