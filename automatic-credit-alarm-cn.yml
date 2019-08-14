@@ -1,0 +1,131 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  emailEndPoint:
+    Type: String
+    Description: "The Subscription Email"
+  credit:
+    Type: Number
+    Description: "Enter the credit limit you want to set as the threshold."
+  thresholdPercentage1:
+    Type: Number
+    Description: "Enter the first decimal(0 - 1) that represents the percentage of the credit limit you want to set."
+  thresholdPercentage2:
+    Type: Number
+    Description: "Enter the second decimal(0 - 1) that represents the percentage of the credit limit you want to set."
+  thresholdPercentage3:
+    Type: Number
+    Description: "Enter the third decimal(0 - 1) that represents the percentage of the credit limit you want to set."  
+  
+
+Resources:
+  billingAlarmSNSTopic:
+    Type: AWS::SNS::Topic
+    Description: "A Topic for the billing alarm"
+  billSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Ref emailEndPoint
+      Protocol: email
+      TopicArn: !Ref billingAlarmSNSTopic
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Description: "A lamdba IAM Role for the billing alarm"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal: {Service: [lambda.amazonaws.com]}
+          Action: ['sts:AssumeRole']
+      Path: "/"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  MultiplyFunction:
+    Type: AWS::Lambda::Function
+    Description: "A lamdba for the billing alarm"
+    Properties:
+      Handler: index.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: !Sub |
+          var response = require('cfn-response');
+          exports.handler = function(event, context) {
+            var result = parseInt(event.ResourceProperties.Op1) * parseFloat(event.ResourceProperties.Op2);
+            response.send(event, context, response.SUCCESS, {Value: result});
+          }
+      Runtime: nodejs8.10
+
+  Multiplication1:
+    Type: Custom::Multiply
+    Properties:
+      ServiceToken: !GetAtt MultiplyFunction.Arn
+      Op1: !Ref credit
+      Op2: !Ref thresholdPercentage1
+  billingAlarm1:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      EvaluationPeriods: 1
+      Period: 21600
+      Threshold: !GetAtt Multiplication1.Value
+      Dimensions:
+      - Name: Currency
+        Value: CNY
+      MetricName: EstimatedCharges
+      Namespace: AWS/Billing
+      Statistic: Maximum
+      DatapointsToAlarm: 1
+      TreatMissingData: missing
+      AlarmActions:
+      - !Ref billingAlarmSNSTopic
+
+  Multiplication2:
+    Type: Custom::Multiply
+    Properties:
+      ServiceToken: !GetAtt MultiplyFunction.Arn
+      Op1: !Ref credit
+      Op2: !Ref thresholdPercentage2
+  billingAlarm2:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      EvaluationPeriods: 1
+      Period: 21600
+      Threshold: !GetAtt Multiplication2.Value
+      Dimensions:
+      - Name: Currency
+        Value: CNY
+      MetricName: EstimatedCharges
+      Namespace: AWS/Billing
+      Statistic: Maximum
+      DatapointsToAlarm: 1
+      TreatMissingData: missing
+      AlarmActions:
+      - !Ref billingAlarmSNSTopic
+  
+  Multiplication3:
+    Type: Custom::Multiply
+    Properties:
+      ServiceToken: !GetAtt MultiplyFunction.Arn
+      Op1: !Ref credit
+      Op2: !Ref thresholdPercentage3
+  billingAlarm3:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      EvaluationPeriods: 1
+      Period: 21600
+      Threshold: !GetAtt Multiplication3.Value
+      Dimensions:
+      - Name: Currency
+        Value: CNY
+      MetricName: EstimatedCharges
+      Namespace: AWS/Billing
+      Statistic: Maximum
+      DatapointsToAlarm: 1
+      TreatMissingData: missing
+      AlarmActions:
+      - !Ref billingAlarmSNSTopic
+
+
+
