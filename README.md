@@ -5,7 +5,7 @@
 
 [Quick Start (China Region)](https://console.amazonaws.cn/cloudformation/home?region=cn-north-1#/stacks/new?stackName=billing-alarm&templateURL=https://automatic-credit-alarm.s3.cn-north-1.amazonaws.com.cn/automatic-credit-alarm-cn.yml) 
 
-[Quick Start (Global Region)](https://console.amazonaws.cn/cloudformation/home?region=us-east-1#/stacks/new?stackName=billing-alarm&templateURL=https://automatic-credit-alarm.s3.cn-north-1.amazonaws.com.cn/automatic-credit-alarm-global.yml)
+[Quick Start (Global Region)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=billing-alarm&templateURL=https://automatic-credit-alarm.s3.cn-north-1.amazonaws.com.cn/automatic-credit-alarm-global.yml)
 
 
 
@@ -19,11 +19,15 @@
 
 - 在您的AWS账户中启动 AWS CloudFormation 模板。
 
+![](https://raw.githubusercontent.com/fanyizhe/automatic-credit-alarm/master/assets/CFN.png)
+
 - 检查导航栏右上角显示的所在区域，根据需要进行更改。
 
         注意：Global地区的账户只能在弗吉尼亚北部(us-east-1)创建账单警报。
 
 - 在 **指定模板** 页面上，保留模板 URL 的默认设置，然后选择 **下一步** 。
+
+![](https://raw.githubusercontent.com/fanyizhe/automatic-credit-alarm/master/assets/template.png)
 
 - 在 **指定堆栈详细信息** 页面上，输入堆栈名称，以及设定的参数，参数说明如下：
 
@@ -31,20 +35,25 @@
     - emailEndPoint: 您用以接受警报邮件的邮箱
     - thresholdPercentage: 您希望设置的阈值百分比（e.g. 70%的最大信用额度），输入一个0-1之间的小数。需要输入3个值(e.g. 0.5, 0.7, 1)。
 
+![](https://raw.githubusercontent.com/fanyizhe/automatic-credit-alarm/master/assets/specifyInput2.png)
+
 - （可选）在 **配置堆栈选项** 页面上，您可以为堆栈中的资源 [指定标签](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html) (键/值对) 并 [设置高级选项](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html)。在完成此操作后，选择 **下一步** 。
 
 - 在 **审核** 页面上，查看并确认模板设置。选择 **功能** 下的复选框，以确认模板将创建 IAM 资源。
 
+![](https://raw.githubusercontent.com/fanyizhe/automatic-credit-alarm/master/assets/capability.png)
+
 - 选择 **创建堆栈** 以部署堆栈。
 - 监控堆栈的状态。当状态为 **CREATE\_COMPLETE** 时，表示脚本及资源创建已完成。
 
+![](https://raw.githubusercontent.com/fanyizhe/automatic-credit-alarm/master/assets/create_complete.png)
 
 
 ****步骤二： 确认订阅****
 
 在您完成资源创建后，您会收到一封确认订阅的邮件。您需要点击 **Comfirm Subscription** 以确认订阅该事件。
 
-
+![](https://raw.githubusercontent.com/fanyizhe/automatic-credit-alarm/master/assets/sns-confirm.png)
 
 
 
